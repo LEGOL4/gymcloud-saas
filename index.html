@@ -1,0 +1,2670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GymCloud — Gestión de Gimnasio en la Nube</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="GymCloud es un sistema de gestión SaaS en la nube para gimnasios pequeños en Lima. Administra socios, agenda clases y factura de forma electrónica con integración SUNAT.">
+  <meta name="keywords" content="GymCloud, gimnasio nube, SaaS, Perú, gestión gimnasio, SUNAT, ISO 27001, facturación electrónica">
+  <meta name="author" content="Proyecto Cloud Computing">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322C55E' stroke-width='2'%3E%3Cpath d='M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42 0-.83.04-1.24.11a7 7 0 0 0-12.76 2.39C2.1 14 2 14.5 2 15a3 3 0 0 0 3 3'/%3E%3Cpath d='M8 16h8'/%3E%3Cpath d='M12 12v8'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts (Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* VARIABLES Y PALETA DE COLORES */
+    :root {
+      --bg-dark: #0F1724;
+      --bg-slate: #1E293B;
+      --bg-slate-dark: #111827;
+      --accent: #22C55E;
+      --accent-hover: #16A34A;
+      --text-white: #F8FAFC;
+      --text-muted: #94A3B8;
+      --border: rgba(255, 255, 255, 0.05);
+      
+      --color-success: #10B981;
+      --color-warning: #F59E0B;
+      --color-danger: #EF4444;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+      --shadow-accent: 0 0 15px rgba(34, 197, 94, 0.15);
+    }
+
+    /* ESTILOS GLOBALES */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+      padding-top: 80px; /* Espacio para navbar fija */
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    section {
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    /* TIPOGRAFÍA */
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+    }
+
+    h2.section-title {
+      font-size: 2.25rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    p.section-subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+      text-align: center;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .accent-color {
+      color: var(--accent);
+    }
+
+    /* BOTONES */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.375rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #0c131d;
+      border: 1px solid var(--accent);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--accent);
+      border: 2.5px solid var(--accent);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(34, 197, 94, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.375rem;
+      border-radius: 0.25rem;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+    }
+
+    /* TABLAS ESTILO DASHBOARD */
+    .table-container {
+      background-color: var(--bg-slate-dark);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 1rem 1.5rem;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: rgba(255, 255, 255, 0.01);
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+    }
+
+    .badge-success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--color-warning);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .badge-danger {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--color-danger);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .badge-info {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    /* CONTROLES DE FORMULARIO */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+      width: 100%;
+      background-color: var(--bg-dark);
+      border: 1px solid #334155;
+      color: var(--text-white);
+      padding: 0.75rem 1rem;
+      border-radius: 0.375rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.2);
+    }
+
+    /* -------------------------------------------------- */
+    /* NAVBAR FIJA */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid transparent;
+    }
+
+    .navbar.scrolled {
+      background-color: rgba(15, 23, 36, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom-color: var(--border);
+      height: 70px;
+    }
+
+    .navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 800;
+      font-size: 1.5rem;
+      text-decoration: none;
+      color: var(--text-white);
+      letter-spacing: -0.03em;
+    }
+
+    .logo-icon {
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.3));
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.75rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-white);
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    /* -------------------------------------------------- */
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      padding: 6rem 0 5rem 0;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      color: var(--accent);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      animation: pulse-border 2s infinite ease-in-out;
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 8px var(--accent);
+      animation: blink 1.5s infinite;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-white) 60%, rgba(248, 250, 252, 0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 5rem;
+    }
+
+    /* METRICAS CARDS */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .metric-card {
+      background-color: var(--bg-slate);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.75rem;
+      text-align: center;
+      transition: all 0.3s;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: transparent;
+      transition: background-color 0.3s;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg), var(--shadow-accent);
+      border-color: rgba(34, 197, 94, 0.2);
+    }
+
+    .metric-card:hover::before {
+      background-color: var(--accent);
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-white);
+      margin-bottom: 0.25rem;
+      line-height: 1;
+    }
+
+    .metric-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-subtext {
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-top: 0.25rem;
+    }
+
+    /* -------------------------------------------------- */
+    /* SOCIOS SECTION */
+    .section-header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+      position: relative;
+      max-width: 380px;
+      width: 100%;
+    }
+
+    .search-input {
+      padding-left: 2.75rem;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background-color: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.875rem;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: var(--text-white);
+    }
+
+    .user-subtext {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .table-empty {
+      text-align: center;
+      padding: 3rem !important;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* -------------------------------------------------- */
+    /* CLASES SECTION */
+    .classes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .class-card {
+      background-color: var(--bg-slate);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s;
+      box-shadow: var(--shadow-md);
+    }
+
+    .class-card:hover {
+      border-color: rgba(34, 197, 94, 0.2);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg), var(--shadow-accent);
+    }
+
+    .class-card.full {
+      opacity: 0.8;
+    }
+
+    .class-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+
+    .class-day {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-white);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .class-time {
+      color: var(--accent);
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+
+    .class-name {
+      font-size: 1.35rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-white);
+    }
+
+    .class-trainer {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .icon-small {
+      width: 14px;
+      height: 14px;
+    }
+
+    .class-capacity {
+      margin-bottom: 1.5rem;
+    }
+
+    .capacity-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.375rem;
+    }
+
+    .progress-bg {
+      height: 6px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.5s ease-out;
+    }
+
+    .btn-book {
+      width: 100%;
+      background-color: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.625rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-book:hover:not(.disabled) {
+      background-color: var(--accent);
+      color: #0c131d;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+    }
+
+    .btn-book.disabled {
+      background-color: rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    /* -------------------------------------------------- */
+    /* FACTURACION SECTION */
+    .billing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .billing-card {
+      background-color: var(--bg-slate-dark);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .billing-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .billing-icon-wrap.green {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+    }
+
+    .billing-icon-wrap.amber {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--color-warning);
+    }
+
+    .billing-icon-wrap.blue {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    .billing-icon-wrap.accent {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: var(--accent);
+    }
+
+    .billing-card-info h4 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .billing-card-info p {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-top: 0.125rem;
+    }
+
+    .sunat-status {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--color-success);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--color-success);
+      animation: blink 1s infinite alternate;
+    }
+
+    .billing-footer-note {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    /* -------------------------------------------------- */
+    /* PLAN DE CONTINUIDAD (BCP) */
+    .bcp-container {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .bcp-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .risk-card {
+      background-color: var(--bg-slate);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .risk-card:hover, .risk-card.highlight {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg), var(--shadow-accent);
+    }
+
+    .risk-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .risk-id-title {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .risk-id {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.25rem;
+      padding: 0.125rem 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .risk-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--text-white);
+    }
+
+    .risk-sliders {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0.75rem;
+      border-radius: 0.375rem;
+    }
+
+    .risk-slider-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .risk-bar-container {
+      width: 100px;
+      height: 6px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+      position: relative;
+    }
+
+    .risk-bar {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .risk-bar.prob {
+      background-color: #3b82f6;
+    }
+
+    .risk-bar.imp {
+      background-color: #a855f7;
+    }
+
+    .risk-control {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .risk-control strong {
+      color: var(--accent);
+    }
+
+    /* HEATMAP 5x5 */
+    .heatmap-section {
+      background-color: var(--bg-slate-dark);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .heatmap-section h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .heatmap-layout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .heatmap-y-label {
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .heatmap-grid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: 32px repeat(5, 60px);
+      grid-template-rows: repeat(5, 60px) 32px;
+      gap: 4px;
+    }
+
+    .heatmap-axis-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .heatmap-cell {
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      position: relative;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .heatmap-cell:hover {
+      filter: brightness(1.25);
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .cell-c { background-color: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35); }
+    .cell-h { background-color: rgba(249, 115, 22, 0.15); border-color: rgba(249, 115, 22, 0.35); }
+    .cell-m { background-color: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.35); }
+    .cell-l { background-color: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.35); }
+
+    .heatmap-node {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s;
+    }
+
+    .heatmap-node.critical {
+      background-color: var(--color-danger);
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+    }
+
+    .heatmap-node.high {
+      background-color: rgba(249, 115, 22, 1);
+      box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+    }
+
+    .heatmap-node.medium {
+      background-color: rgba(234, 179, 8, 1);
+      color: #0F1724;
+      box-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
+    }
+
+    .heatmap-node:hover, .heatmap-node.highlight {
+      transform: scale(1.25);
+      outline: 2px solid var(--text-white);
+    }
+
+    .heatmap-x-label {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 1rem;
+    }
+
+    .heatmap-legend {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* -------------------------------------------------- */
+    /* ESTADO DEL SERVICIO SECTION */
+    .status-dashboard {
+      background-color: var(--bg-slate-dark);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2rem;
+    }
+
+    .status-header-kpi {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .live-indicator-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .pulse-dot-large {
+      width: 10px;
+      height: 10px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent);
+      animation: blink-large 1s infinite alternate;
+    }
+
+    .uptime-percentage-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .uptime-percentage-value {
+      color: var(--accent);
+    }
+
+    /* FIRMA VISUAL: UPTIME BARS 90 DIAS */
+    .uptime-visualizer {
+      margin-bottom: 2.5rem;
+    }
+
+    .uptime-bars-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .uptime-bars-container {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 44px;
+      gap: 2.5px;
+    }
+
+    .uptime-bar {
+      flex: 1;
+      height: 100%;
+      background-color: var(--accent);
+      border-radius: 2px;
+      position: relative;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s;
+    }
+
+    .uptime-bar.warning {
+      background-color: var(--color-warning);
+    }
+
+    .uptime-bar.maintenance {
+      background-color: #475569;
+    }
+
+    .uptime-bar:hover {
+      filter: brightness(1.25);
+      cursor: pointer;
+    }
+
+    .uptime-bar .tooltip {
+      visibility: hidden;
+      position: absolute;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--bg-slate);
+      color: var(--text-white);
+      text-align: center;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      z-index: 10;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      opacity: 0;
+      transition: opacity 0.2s, visibility 0.2s;
+      pointer-events: none;
+      line-height: 1.4;
+    }
+
+    .uptime-bar:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* SERVICIOS LIST & METRICS SLA */
+    .status-details-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2.5rem;
+    }
+
+    .services-status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .service-status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+    }
+
+    .service-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .service-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--accent);
+      animation: blink 1.2s infinite alternate;
+    }
+
+    .sla-metrics-panel {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+
+    .sla-card {
+      background-color: var(--bg-slate);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .sla-card-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-white);
+      line-height: 1.2;
+    }
+
+    .sla-card-value.accent {
+      color: var(--accent);
+    }
+
+    .sla-card-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .sla-card-sub {
+      font-size: 0.7rem;
+      color: var(--accent);
+      margin-top: 0.25rem;
+    }
+
+    /* -------------------------------------------------- */
+    /* FOOTER */
+    footer {
+      background-color: var(--bg-slate-dark);
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .footer-left strong {
+      color: var(--text-white);
+    }
+
+    .footer-tech {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .footer-tech span {
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      border: 1px solid var(--border);
+    }
+
+    /* -------------------------------------------------- */
+    /* TOAST NOTIFICATION */
+    .toast-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      background-color: var(--bg-slate);
+      border-left: 4px solid var(--accent);
+      color: var(--text-white);
+      padding: 1rem 1.5rem;
+      border-radius: 0.375rem;
+      box-shadow: var(--shadow-lg);
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateX(120%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      min-width: 300px;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    /* MODALES */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(15, 23, 36, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background-color: var(--bg-slate);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.75rem;
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem;
+      position: relative;
+      transform: translateY(-30px);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      color: var(--text-white);
+    }
+
+    .confirm-text {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .confirm-details-card {
+      background-color: rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .confirm-detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .confirm-detail-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .confirm-detail-label {
+      color: var(--text-muted);
+    }
+
+    .confirm-detail-value {
+      color: var(--text-white);
+      font-weight: 600;
+    }
+
+    /* -------------------------------------------------- */
+    /* ANIMACIONES */
+    @keyframes blink {
+      0% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes blink-large {
+      0% { opacity: 0.5; box-shadow: 0 0 4px var(--accent); }
+      100% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
+    }
+
+    @keyframes pulse-border {
+      0% { border-color: rgba(34, 197, 94, 0.2); }
+      50% { border-color: rgba(34, 197, 94, 0.5); }
+      100% { border-color: rgba(34, 197, 94, 0.2); }
+    }
+
+    /* -------------------------------------------------- */
+    /* RESPONSIVIDAD (MOBILE & TABLET) */
+    @media (max-width: 1024px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .billing-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .status-details-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding-top: 70px;
+      }
+      
+      h1 {
+        font-size: 2.5rem !important;
+      }
+
+      .mobile-menu-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: rgba(15, 23, 36, 0.96);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        padding: 2rem 1.5rem;
+        gap: 1.5rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-150%);
+        transition: transform 0.3s ease;
+      }
+
+      .nav-links.active {
+        transform: translateY(0);
+      }
+
+      .hero {
+        padding: 4rem 0 3rem 0;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .billing-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .bcp-cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .heatmap-layout {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .heatmap-grid {
+        grid-template-columns: 24px repeat(5, 45px);
+        grid-template-rows: repeat(5, 45px) 24px;
+      }
+
+      .heatmap-cell {
+        font-size: 0.7rem;
+      }
+
+      .heatmap-node {
+        width: 18px;
+        height: 18px;
+        font-size: 0.55rem;
+      }
+
+      footer .container {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar" id="navbar">
+    <div class="container">
+      <a href="#inicio" class="logo">
+        <span class="logo-icon"><i data-lucide="cloud"></i></span>
+        <span>Gym<span class="accent-color">Cloud</span></span>
+      </a>
+      
+      <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+        <i data-lucide="menu"></i>
+      </button>
+      
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#inicio" class="active">Inicio</a></li>
+        <li><a href="#socios">Socios</a></li>
+        <li><a href="#clases">Clases</a></li>
+        <li><a href="#facturacion">Facturación</a></li>
+        <li><a href="#continuidad">Continuidad</a></li>
+        <li><a href="#estado">Estado</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="inicio">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          <span>Sistema Operativo — 99.9% uptime</span>
+        </div>
+        <h1>GymCloud — Tu gimnasio en la nube</h1>
+        <p>Gestión 100% digital de socios, clases y facturación. Disponible siempre, desde cualquier lugar para la administración ágil de tu centro fitness.</p>
+        
+        <div class="hero-actions">
+          <a href="#socios" class="btn btn-primary">Ver Demo</a>
+          <a href="#continuidad" class="btn btn-secondary">Ver Plan de Continuidad</a>
+        </div>
+      </div>
+      
+      <!-- METRICAS -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value" id="countMembers">0</div>
+          <div class="metric-label">Socios activos</div>
+          <div class="metric-subtext">Crecimiento constante</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="countUptime">0%</div>
+          <div class="metric-label">Disponibilidad</div>
+          <div class="metric-subtext">SLA garantizado</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="countPaper">1,200</div>
+          <div class="metric-label">Papel utilizado</div>
+          <div class="metric-subtext">Hojas de papel guardadas</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="countModules">0</div>
+          <div class="metric-label">Módulos en la nube</div>
+          <div class="metric-subtext">SaaS Integrado</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN SOCIOS -->
+  <section id="socios">
+    <div class="container">
+      <h2 class="section-title">Gestión de Socios</h2>
+      <p class="section-subtitle">Migración completa del archivador físico a una base de datos segura y escalable en la nube. Consulta, filtra y registra nuevos miembros.</p>
+      
+      <div class="section-header-actions">
+        <!-- BUSCADOR -->
+        <div class="search-wrapper">
+          <i data-lucide="search" class="search-icon icon-small"></i>
+          <input type="text" id="searchMembers" class="form-control search-input" placeholder="Buscar socios por nombre, DNI o email...">
+        </div>
+        <!-- REGISTRAR SOCIO -->
+        <button class="btn btn-primary" onclick="openModal('addMemberModal')">
+          <i data-lucide="user-plus"></i>
+          <span>Registrar nuevo socio</span>
+        </button>
+      </div>
+
+      <!-- TABLA DE SOCIOS -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre Completo</th>
+              <th>Tipo Membresía</th>
+              <th>Estado</th>
+              <th>Vencimiento</th>
+              <th style="width: 80px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="membersTableBody">
+            <!-- Cargado por JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN CLASES -->
+  <section id="clases">
+    <div class="container">
+      <h2 class="section-title">Agendamiento de Clases</h2>
+      <p class="section-subtitle">Reservación de cupos en tiempo real para evitar sobreaforos y optimizar las agendas de entrenadores. Actualización dinámica instantánea.</p>
+      
+      <div class="classes-grid" id="classesGrid">
+        <!-- Tarjetas de clases generadas por JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN FACTURACIÓN -->
+  <section id="facturacion">
+    <div class="container">
+      <h2 class="section-title">Facturación Electrónica</h2>
+      <p class="section-subtitle">Emisión automatizada de comprobantes electrónicos integrados directamente con SUNAT. Olvídate de los talonarios de boletas físicas.</p>
+      
+      <!-- RESUMEN FACTURACION -->
+      <div class="billing-grid">
+        <div class="billing-card">
+          <div class="billing-icon-wrap green">
+            <i data-lucide="trending-up"></i>
+          </div>
+          <div class="billing-card-info">
+            <h4>Ingresos del mes</h4>
+            <p>S/ 4,250</p>
+          </div>
+        </div>
+        <div class="billing-card">
+          <div class="billing-icon-wrap amber">
+            <i data-lucide="clock"></i>
+          </div>
+          <div class="billing-card-info">
+            <h4>Cobros pendientes</h4>
+            <p>S/ 380</p>
+          </div>
+        </div>
+        <div class="billing-card">
+          <div class="billing-icon-wrap blue">
+            <i data-lucide="file-text"></i>
+          </div>
+          <div class="billing-card-info">
+            <h4>Comprobantes emitidos</h4>
+            <p>47</p>
+          </div>
+        </div>
+        <div class="billing-card">
+          <div class="billing-icon-wrap accent">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <div class="billing-card-info">
+            <h4>Integración</h4>
+            <div class="sunat-status">
+              <span>SUNAT Activa</span>
+              <span class="pulse-dot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÚLTIMAS TRANSACCIONES -->
+      <h3 style="font-size: 1.25rem; margin-bottom: 1rem; font-weight: 600;">Últimas Transacciones</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>N° Comprobante</th>
+              <th>Socio</th>
+              <th>Monto</th>
+              <th>Fecha de Emisión</th>
+              <th>Estado SUNAT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="font-family: monospace; font-weight: 600;">B001-000452</span></td>
+              <td>Carlos Quispe</td>
+              <td>S/ 150.00</td>
+              <td>2026-06-20</td>
+              <td><span class="badge badge-success"><i data-lucide="check" class="icon-small"></i> Aceptado</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-family: monospace; font-weight: 600;">B001-000451</span></td>
+              <td>María Flores</td>
+              <td>S/ 200.00</td>
+              <td>2026-06-19</td>
+              <td><span class="badge badge-success"><i data-lucide="check" class="icon-small"></i> Aceptado</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-family: monospace; font-weight: 600;">B001-000450</span></td>
+              <td>José Mamani</td>
+              <td>S/ 100.00</td>
+              <td>2026-06-18</td>
+              <td><span class="badge badge-warning"><i data-lucide="loader" class="icon-small"></i> Pendiente</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-family: monospace; font-weight: 600;">B001-000449</span></td>
+              <td>Ana Torres</td>
+              <td>S/ 100.00</td>
+              <td>2026-06-18</td>
+              <td><span class="badge badge-success"><i data-lucide="check" class="icon-small"></i> Aceptado</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-family: monospace; font-weight: 600;">B001-000448</span></td>
+              <td>Rosa Vargas</td>
+              <td>S/ 150.00</td>
+              <td>2026-06-17</td>
+              <td><span class="badge badge-success"><i data-lucide="check" class="icon-small"></i> Aceptado</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <p class="billing-footer-note">Facturación electrónica vía Nubó — Integrado con SUNAT bajo el estándar OSE/PSE.</p>
+    </div>
+  </section>
+
+  <!-- SECCIÓN PLAN DE CONTINUIDAD (BCP) -->
+  <section id="continuidad">
+    <div class="container">
+      <h2 class="section-title">Plan de Continuidad del Negocio (BCP)</h2>
+      <p class="section-subtitle">Diseño de mitigación de riesgos operativos enfocado en la norma <strong>ISO/IEC 27001:2022</strong>. Garantía de disponibilidad y resiliencia de la información ante fallas tecnológicas.</p>
+      
+      <div class="bcp-container">
+        <!-- CARDS RIESGOS -->
+        <div class="bcp-cards-grid">
+          <!-- R1 -->
+          <div class="risk-card" id="card-r1">
+            <div class="risk-card-header">
+              <div class="risk-id-title">
+                <span class="risk-id">R1</span>
+                <span class="risk-title">Falla en adopción del SaaS</span>
+              </div>
+              <span class="badge badge-danger">Crítico</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Falta de cultura digital o rechazo al cambio por parte de entrenadores y personal.
+            </div>
+            <div class="risk-sliders">
+              <div class="risk-slider-item">
+                <span>Probabilidad: 4/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar prob" style="width: 80%;"></div>
+                </div>
+              </div>
+              <div class="risk-slider-item">
+                <span>Impacto: 5/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar imp" style="width: 100%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="risk-control">
+              Control: <strong>ISO A.6.3</strong> (Concienciación y capacitación en seguridad).
+            </div>
+          </div>
+          
+          <!-- R2 -->
+          <div class="risk-card" id="card-r2">
+            <div class="risk-card-header">
+              <div class="risk-id-title">
+                <span class="risk-id">R2</span>
+                <span class="risk-title">Pérdida de datos en migración</span>
+              </div>
+              <span class="badge badge-danger">Crítico</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Errores humanos o fallas técnicas al migrar el historial del papel a la base de datos cloud.
+            </div>
+            <div class="risk-sliders">
+              <div class="risk-slider-item">
+                <span>Probabilidad: 4/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar prob" style="width: 80%;"></div>
+                </div>
+              </div>
+              <div class="risk-slider-item">
+                <span>Impacto: 4/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar imp" style="width: 80%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="risk-control">
+              Control: <strong>ISO A.8.13</strong> (Gestión de copias de seguridad).
+            </div>
+          </div>
+
+          <!-- R3 -->
+          <div class="risk-card" id="card-r3">
+            <div class="risk-card-header">
+              <div class="risk-id-title">
+                <span class="risk-id">R3</span>
+                <span class="risk-title">Interrupción del proveedor SaaS</span>
+              </div>
+              <span class="badge badge-warning" style="background-color: rgba(249, 115, 22, 0.1); color: #fb923c; border-color: rgba(249, 115, 22, 0.2);">Alto</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Caídas del servicio o indisponibilidad en los servidores del proveedor cloud.
+            </div>
+            <div class="risk-sliders">
+              <div class="risk-slider-item">
+                <span>Probabilidad: 3/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar prob" style="width: 60%;"></div>
+                </div>
+              </div>
+              <div class="risk-slider-item">
+                <span>Impacto: 4/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar imp" style="width: 80%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="risk-control">
+              Control: <strong>ISO A.5.23</strong> (Servicios en la nube y acuerdos SLA).
+            </div>
+          </div>
+
+          <!-- R4 -->
+          <div class="risk-card" id="card-r4">
+            <div class="risk-card-header">
+              <div class="risk-id-title">
+                <span class="risk-id">R4</span>
+                <span class="risk-title">Brecha y filtración de datos</span>
+              </div>
+              <span class="badge badge-warning" style="background-color: rgba(249, 115, 22, 0.1); color: #fb923c; border-color: rgba(249, 115, 22, 0.2);">Alto</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Acceso no autorizado a información confidencial de membresías y DNI de socios.
+            </div>
+            <div class="risk-sliders">
+              <div class="risk-slider-item">
+                <span>Probabilidad: 3/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar prob" style="width: 60%;"></div>
+                </div>
+              </div>
+              <div class="risk-slider-item">
+                <span>Impacto: 3/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar imp" style="width: 60%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="risk-control">
+              Control: <strong>ISO A.8.5</strong> (Prevención de fuga de información).
+            </div>
+          </div>
+
+          <!-- R5 -->
+          <div class="risk-card" id="card-r5">
+            <div class="risk-card-header">
+              <div class="risk-id-title">
+                <span class="risk-id">R5</span>
+                <span class="risk-title">Dependencia del proveedor</span>
+              </div>
+              <span class="badge badge-warning">Medio</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Dificultades técnicas para exportar datos e histórico si se decide migrar a otra plataforma.
+            </div>
+            <div class="risk-sliders">
+              <div class="risk-slider-item">
+                <span>Probabilidad: 2/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar prob" style="width: 40%;"></div>
+                </div>
+              </div>
+              <div class="risk-slider-item">
+                <span>Impacto: 3/5</span>
+                <div class="risk-bar-container">
+                  <div class="risk-bar imp" style="width: 60%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="risk-control">
+              Control: <strong>ISO A.5.23</strong> (Portabilidad y salida ordenada del SaaS).
+            </div>
+          </div>
+        </div>
+
+        <!-- HEATMAP SECTOR -->
+        <div class="heatmap-section">
+          <h3>Mapa de Calor de Riesgos (5x5)</h3>
+          
+          <div class="heatmap-layout">
+            <div class="heatmap-y-label">Impacto (I) &rarr;</div>
+            
+            <div class="heatmap-grid-container">
+              <div class="heatmap-grid">
+                <!-- Y-Labels y Celdas de cuadrícula. Eje Y: 5 (Crítico/Catastrófico) a 1 (Insignificante) -->
+                <!-- Y=5 -->
+                <div class="heatmap-axis-label">5</div>
+                <div class="heatmap-cell cell-m"></div>
+                <div class="heatmap-cell cell-h"></div>
+                <div class="heatmap-cell cell-c"></div>
+                <div class="heatmap-cell cell-c"><span class="heatmap-node critical" data-risk="r1" id="node-r1">R1</span></div>
+                <div class="heatmap-cell cell-c"></div>
+
+                <!-- Y=4 -->
+                <div class="heatmap-axis-label">4</div>
+                <div class="heatmap-cell cell-m"></div>
+                <div class="heatmap-cell cell-h"></div>
+                <div class="heatmap-cell cell-h"><span class="heatmap-node high" data-risk="r3" id="node-r3">R3</span></div>
+                <div class="heatmap-cell cell-c"><span class="heatmap-node critical" data-risk="r2" id="node-r2">R2</span></div>
+                <div class="heatmap-cell cell-c"></div>
+
+                <!-- Y=3 -->
+                <div class="heatmap-axis-label">3</div>
+                <div class="heatmap-cell cell-l"></div>
+                <div class="heatmap-cell cell-m"><span class="heatmap-node medium" data-risk="r5" id="node-r5">R5</span></div>
+                <div class="heatmap-cell cell-h"><span class="heatmap-node high" data-risk="r4" id="node-r4">R4</span></div>
+                <div class="heatmap-cell cell-h"></div>
+                <div class="heatmap-cell cell-h"></div>
+
+                <!-- Y=2 -->
+                <div class="heatmap-axis-label">2</div>
+                <div class="heatmap-cell cell-l"></div>
+                <div class="heatmap-cell cell-l"></div>
+                <div class="heatmap-cell cell-m"></div>
+                <div class="heatmap-cell cell-h"></div>
+                <div class="heatmap-cell cell-h"></div>
+
+                <!-- Y=1 -->
+                <div class="heatmap-axis-label">1</div>
+                <div class="heatmap-cell cell-l"></div>
+                <div class="heatmap-cell cell-l"></div>
+                <div class="heatmap-cell cell-m"></div>
+                <div class="heatmap-cell cell-m"></div>
+                <div class="heatmap-cell cell-m"></div>
+
+                <!-- X Axis Labels (bottom row) -->
+                <div></div> <!-- vacío -->
+                <div class="heatmap-axis-label">1</div>
+                <div class="heatmap-axis-label">2</div>
+                <div class="heatmap-axis-label">3</div>
+                <div class="heatmap-axis-label">4</div>
+                <div class="heatmap-axis-label">5</div>
+              </div>
+              <div class="heatmap-x-label">Probabilidad (P) &rarr;</div>
+            </div>
+          </div>
+
+          <div class="heatmap-legend">
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: rgba(239, 68, 68, 0.2); border-color: #EF4444;"></span>
+              <span>Crítico (Rojo)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: rgba(249, 115, 22, 0.2); border-color: #F97316;"></span>
+              <span>Alto (Naranja)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: rgba(234, 179, 8, 0.2); border-color: #EAB308;"></span>
+              <span>Medio (Amarillo)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: rgba(34, 197, 94, 0.2); border-color: #22C55E;"></span>
+              <span>Bajo (Verde)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN ESTADO DEL SERVICIO -->
+  <section id="estado">
+    <div class="container">
+      <h2 class="section-title">Estado del Servicio en Tiempo Real</h2>
+      <p class="section-subtitle">Transparencia absoluta sobre la operatividad del sistema en la infraestructura de Azure. Disponibilidad continua garantizada.</p>
+      
+      <div class="status-dashboard">
+        <!-- ESTADO GENERAL -->
+        <div class="status-header-kpi">
+          <div class="live-indicator-wrap">
+            <span class="pulse-dot-large"></span>
+            <span class="uptime-percentage-title">Todos los sistemas operativos</span>
+          </div>
+          <div class="uptime-percentage-title">
+            Uptime (últimos 90 días): <span class="uptime-percentage-value">99.97%</span>
+          </div>
+        </div>
+
+        <!-- FIRMA VISUAL: UPTIME BARS -->
+        <div class="uptime-visualizer">
+          <div class="uptime-bars-label">
+            <span>Hace 90 días</span>
+            <span>Uptime continuo</span>
+            <span>Hoy (100%)</span>
+          </div>
+          <div class="uptime-bars-container" id="uptimeBars">
+            <!-- 90 Barras generadas dinámicamente por JS -->
+          </div>
+        </div>
+
+        <!-- DETALLES DE SERVICIOS Y SLA METRICAS -->
+        <div class="status-details-grid">
+          <!-- LISTADO DE MICROSERVICIOS -->
+          <div class="services-status-list">
+            <div class="service-status-row">
+              <div class="service-info">
+                <span class="service-dot"></span>
+                <span>Gestión de Socios</span>
+              </div>
+              <span class="badge badge-success">Operativo</span>
+            </div>
+            
+            <div class="service-status-row">
+              <div class="service-info">
+                <span class="service-dot"></span>
+                <span>Facturación SUNAT</span>
+              </div>
+              <span class="badge badge-success">Operativo</span>
+            </div>
+
+            <div class="service-status-row">
+              <div class="service-info">
+                <span class="service-dot"></span>
+                <span>Agendamiento de Clases</span>
+              </div>
+              <span class="badge badge-success">Operativo</span>
+            </div>
+
+            <div class="service-status-row">
+              <div class="service-info">
+                <span class="service-dot"></span>
+                <span>Backup Automático</span>
+              </div>
+              <span class="badge badge-success">Operativo</span>
+            </div>
+
+            <div class="service-status-row">
+              <div class="service-info">
+                <span class="service-dot"></span>
+                <span>Control de Acceso</span>
+              </div>
+              <span class="badge badge-success">Operativo</span>
+            </div>
+          </div>
+
+          <!-- PANELES DE METRICAS -->
+          <div class="sla-metrics-panel">
+            <div class="sla-card">
+              <div class="sla-card-value accent" id="incidentCounter">0</div>
+              <div class="sla-card-label">Días sin incidentes</div>
+              <div class="sla-card-sub">Servicio estable</div>
+            </div>
+            
+            <div class="sla-card">
+              <div class="sla-card-value">Hace 47d</div>
+              <div class="sla-card-label">Último incidente</div>
+              <div class="sla-card-sub">Resolución rápida</div>
+            </div>
+
+            <div class="sla-card">
+              <div class="sla-card-value">4 horas</div>
+              <div class="sla-card-label">RTO Objetivo</div>
+              <div class="sla-card-sub">Tiempo recuperación</div>
+            </div>
+
+            <div class="sla-card">
+              <div class="sla-card-value">24 horas</div>
+              <div class="sla-card-label">RPO Objetivo</div>
+              <div class="sla-card-sub">Punto de recuperación</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-left">
+        <strong>GymCloud © 2024 — Proyecto Universitario de Cloud Computing</strong>
+        <span>Desplegado en Microsoft Azure Static Web Apps</span>
+      </div>
+      <div class="footer-tech">
+        <span>Tecnología: SaaS</span>
+        <span>ISO 27001 Compliance</span>
+        <span>Ley N° 29733 (Datos Personales)</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- MODAL: REGISTRAR SOCIO -->
+  <div class="modal-overlay" id="addMemberModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Nuevo Socio</h3>
+        <button class="modal-close" onclick="closeModal('addMemberModal')">&times;</button>
+      </div>
+      <form id="addMemberForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="memberName">Nombre Completo</label>
+            <input type="text" id="memberName" class="form-control" placeholder="Ej. Juan Pérez" required>
+          </div>
+          <div class="form-group">
+            <label for="memberDni">DNI</label>
+            <input type="text" id="memberDni" class="form-control" placeholder="8 dígitos" pattern="\d{8}" required>
+          </div>
+          <div class="form-group">
+            <label for="memberEmail">Correo Electrónico</label>
+            <input type="email" id="memberEmail" class="form-control" placeholder="ejemplo@correo.com" required>
+          </div>
+          <div class="form-group">
+            <label for="memberType">Tipo de Membresía</label>
+            <select id="memberType" class="form-control" required>
+              <option value="Estándar">Estándar (S/ 100/mes)</option>
+              <option value="Premium">Premium (S/ 150/mes)</option>
+              <option value="VIP">VIP (S/ 200/mes)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="memberDate">Fecha de Inicio</label>
+            <input type="date" id="memberDate" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('addMemberModal')" style="padding: 0.5rem 1rem;">Cancelar</button>
+          <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;">Guardar en Nube</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: RESERVAR CLASE -->
+  <div class="modal-overlay" id="bookModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmar Reserva</h3>
+        <button class="modal-close" onclick="closeModal('bookModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">¿Estás seguro de que deseas agendar un cupo en la nube para esta sesión deportiva?</p>
+        
+        <div class="confirm-details-card">
+          <div class="confirm-detail-row">
+            <span class="confirm-detail-label">Clase:</span>
+            <span class="confirm-detail-value" id="confirmClassName">-</span>
+          </div>
+          <div class="confirm-detail-row">
+            <span class="confirm-detail-label">Horario:</span>
+            <span class="confirm-detail-value" id="confirmClassTime">-</span>
+          </div>
+          <div class="confirm-detail-row">
+            <span class="confirm-detail-label">Entrenador:</span>
+            <span class="confirm-detail-value" id="confirmClassTrainer">-</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('bookModal')" style="padding: 0.5rem 1rem;">Cancelar</button>
+        <button class="btn btn-primary" id="confirmBookBtn" style="padding: 0.5rem 1rem;">Confirmar Reserva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LÓGICA JAVASCRIPT -->
+  <script>
+    // BASE DE DATOS EN MEMORIA (SIMULADA)
+    let members = [
+      { id: 1, name: "Carlos Quispe", dni: "72149583", email: "carlos.quispe@email.com", membership: "Premium", status: "Activo", expiry: "2026-07-15" },
+      { id: 2, name: "María Flores", dni: "45892014", email: "maria.flores@email.com", membership: "VIP", status: "Activo", expiry: "2026-08-01" },
+      { id: 3, name: "José Mamani", dni: "10569842", email: "jose.mamani@email.com", membership: "Estándar", status: "Por vencer", expiry: "2026-06-25" },
+      { id: 4, name: "Ana Torres", dni: "70483951", email: "ana.torres@email.com", membership: "Estándar", status: "Activo", expiry: "2026-07-20" },
+      { id: 5, name: "Luis Condori", dni: "08472915", email: "luis.condori@email.com", membership: "VIP", status: "Vencido", expiry: "2026-06-10" },
+      { id: 6, name: "Rosa Vargas", dni: "41985630", email: "rosa.vargas@email.com", membership: "Premium", status: "Por vencer", expiry: "2026-06-28" }
+    ];
+
+    let classes = [
+      { id: 1, day: "Lunes", time: "7:00 AM", name: "Spinning", trainer: "Carlos R.", enrolled: 12, capacity: 20 },
+      { id: 2, day: "Lunes", time: "6:00 PM", name: "Zumba", trainer: "María L.", enrolled: 18, capacity: 20 },
+      { id: 3, day: "Martes", time: "8:00 AM", name: "CrossFit", trainer: "Juan P.", enrolled: 8, capacity: 15 },
+      { id: 4, day: "Miércoles", time: "7:00 AM", name: "Yoga", trainer: "Ana S.", enrolled: 10, capacity: 12 },
+      { id: 5, day: "Jueves", time: "6:00 PM", name: "Funcional", trainer: "Pedro M.", enrolled: 15, capacity: 20 },
+      { id: 6, day: "Viernes", time: "7:00 AM", name: "Spinning", trainer: "Carlos R.", enrolled: 5, capacity: 20 },
+      { id: 7, day: "Sábado", time: "9:00 AM", name: "Zumba", trainer: "María L.", enrolled: 20, capacity: 20 }
+    ];
+
+    let selectedClassId = null;
+
+    // --- CARGA DE DATOS E INICIALIZACIÓN ---
+    document.addEventListener("DOMContentLoaded", () => {
+      // Iniciar iconos de Lucide
+      lucide.createIcons();
+      
+      // Dibujar tablas y tarjetas
+      renderMembersTable(members);
+      renderClasses();
+      generateUptimeBars();
+      
+      // Animar métricas del Hero (al cargar la página)
+      animateValue(document.getElementById("countMembers"), 0, 150, 1500);
+      animateValueFloat(document.getElementById("countUptime"), 0.0, 99.9, 1500, "%");
+      animateValue(document.getElementById("countPaper"), 1200, 0, 1800); // Cuenta regresiva simulando el ahorro de papel
+      animateValue(document.getElementById("countModules"), 0, 4, 1500);
+
+      // Listener para el scroll
+      window.addEventListener("scroll", handleScroll);
+      
+      // Configurar el Intersection Observer para animaciones al hacer scroll
+      setupIntersectionObservers();
+
+      // Configurar busqueda de socios
+      const searchInput = document.getElementById("searchMembers");
+      searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        const filtered = members.filter(m => 
+          m.name.toLowerCase().includes(query) || 
+          m.dni.includes(query) || 
+          m.email.toLowerCase().includes(query)
+        );
+        renderMembersTable(filtered);
+      });
+
+      // Configurar guardado de socio
+      const addMemberForm = document.getElementById("addMemberForm");
+      addMemberForm.addEventListener("submit", handleAddMember);
+
+      // Configurar confirmación de clase
+      const confirmBookBtn = document.getElementById("confirmBookBtn");
+      confirmBookBtn.addEventListener("click", handleConfirmBooking);
+
+      // Vincular interactividad del Heatmap y las tarjetas de riesgo
+      setupHeatmapLinking();
+
+      // Setear fecha por defecto en el selector de registro (hoy)
+      document.getElementById("memberDate").value = new Date().toISOString().split('T')[0];
+    });
+
+    // --- FUNCIONES DE RENDERIZADO ---
+    function renderMembersTable(data) {
+      const tbody = document.getElementById("membersTableBody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="table-empty">No se encontraron socios con esos datos de búsqueda.</td></tr>`;
+        return;
+      }
+
+      data.forEach(m => {
+        let statusClass = "badge-success";
+        if (m.status === "Por vencer") statusClass = "badge-warning";
+        if (m.status === "Vencido") statusClass = "badge-danger";
+
+        // Obtener iniciales para el avatar
+        const initials = m.name.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase();
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <div class="user-cell">
+              <div class="avatar">${initials}</div>
+              <div>
+                <div class="user-name">${m.name}</div>
+                <div class="user-subtext">DNI: ${m.dni} | ${m.email}</div>
+              </div>
+            </div>
+          </td>
+          <td>${m.membership}</td>
+          <td><span class="badge ${statusClass}">${m.status}</span></td>
+          <td>${m.expiry}</td>
+          <td>
+            <button class="btn-icon" onclick="deleteMember(${m.id})" title="Eliminar socio (Simulado)">
+              <i data-lucide="trash-2" style="width:16px; height:16px;"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function renderClasses() {
+      const grid = document.getElementById("classesGrid");
+      grid.innerHTML = "";
+
+      classes.forEach(c => {
+        const percent = (c.enrolled / c.capacity) * 100;
+        const isFull = c.enrolled >= c.capacity;
+
+        let progressBarColor = "var(--accent)";
+        if (isFull) progressBarColor = "var(--color-danger)";
+        else if (percent >= 80) progressBarColor = "var(--color-warning)";
+
+        const card = document.createElement("div");
+        card.classList.add("class-card");
+        if (isFull) card.classList.add("full");
+
+        card.innerHTML = `
+          <div class="class-header">
+            <span class="class-day">${c.day}</span>
+            <span class="class-time">${c.time}</span>
+          </div>
+          <h3 class="class-name">${c.name}</h3>
+          <div class="class-trainer">
+            <i data-lucide="user" class="icon-small"></i>
+            <span>Entrenador: ${c.trainer}</span>
+          </div>
+          <div class="class-capacity">
+            <div class="capacity-labels">
+              <span>Aforo / Reservas</span>
+              <span>${c.enrolled} / ${c.capacity} cupos</span>
+            </div>
+            <div class="progress-bg">
+              <div class="progress-bar" style="width: ${percent}%; background-color: ${progressBarColor};"></div>
+            </div>
+          </div>
+          <button class="btn-book ${isFull ? 'disabled' : ''}" ${isFull ? 'disabled' : ''} onclick="openBookModal(${c.id})">
+            ${isFull ? 'Lleno (Cupo Completo)' : 'Reservar Clase'}
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function generateUptimeBars() {
+      const container = document.getElementById("uptimeBars");
+      container.innerHTML = "";
+
+      // Generar 90 barras verticales (de las cuales 2 o 3 indican mantenimiento/incidencia leve)
+      for (let i = 89; i >= 0; i--) {
+        const bar = document.createElement("div");
+        bar.classList.add("uptime-bar");
+        bar.style.transitionDelay = `${(89 - i) * 6}ms`; // Efecto staggered al entrar en pantalla
+
+        const tooltip = document.createElement("span");
+        tooltip.classList.add("tooltip");
+
+        const dayText = i === 0 ? "Hoy" : `Hace ${i} días`;
+        
+        // Simular incidentes o mantenimientos concretos
+        if (i === 47) {
+          // El incidente de hace 47 días
+          bar.classList.add("warning");
+          tooltip.innerHTML = `<strong>${dayText}</strong><br>Incidente: Sobrecarga API<br>Uptime: 98.2%`;
+        } else if (i === 15 || i === 72) {
+          // Mantenimientos agendados
+          bar.classList.add("maintenance");
+          tooltip.innerHTML = `<strong>${dayText}</strong><br>Mantenimiento Programado<br>Uptime: 99.4%`;
+        } else {
+          // Estado óptimo
+          tooltip.innerHTML = `<strong>${dayText}</strong><br>Sistemas Estables<br>Uptime: 100%`;
+        }
+
+        bar.appendChild(tooltip);
+        container.appendChild(bar);
+      }
+    }
+
+    // --- ADMINISTRACIÓN DE SOCIOS (ACCIONES) ---
+    function handleAddMember(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById("memberName").value.trim();
+      const dni = document.getElementById("memberDni").value.trim();
+      const email = document.getElementById("memberEmail").value.trim();
+      const membership = document.getElementById("memberType").value;
+      const startDate = document.getElementById("memberDate").value;
+
+      // Calcular fecha de vencimiento (30 días en el futuro)
+      const start = new Date(startDate);
+      start.setDate(start.getDate() + 30);
+      const expiryDate = start.toISOString().split('T')[0];
+
+      const newMember = {
+        id: members.length ? Math.max(...members.map(m => m.id)) + 1 : 1,
+        name: name,
+        dni: dni,
+        email: email,
+        membership: membership,
+        status: "Activo",
+        expiry: expiryDate
+      };
+
+      members.unshift(newMember); // Agregar al inicio
+      renderMembersTable(members);
+      
+      closeModal("addMemberModal");
+      document.getElementById("addMemberForm").reset();
+      document.getElementById("memberDate").value = new Date().toISOString().split('T')[0];
+
+      showToast("Socio registrado exitosamente en la nube ✓");
+    }
+
+    function deleteMember(id) {
+      if (confirm("¿Estás seguro de que deseas eliminar este socio de la base de datos cloud? (Acción simulada)")) {
+        members = members.filter(m => m.id !== id);
+        // Volver a renderizar la tabla aplicando el filtro de búsqueda si tiene texto
+        const query = document.getElementById("searchMembers").value.trim().toLowerCase();
+        const filtered = members.filter(m => 
+          m.name.toLowerCase().includes(query) || 
+          m.dni.includes(query) || 
+          m.email.toLowerCase().includes(query)
+        );
+        renderMembersTable(filtered);
+        showToast("Registro de socio removido de la nube.");
+      }
+    }
+
+    // --- RESERVAS DE CLASES (ACCIONES) ---
+    function openBookModal(classId) {
+      const cls = classes.find(c => c.id === classId);
+      if (!cls || cls.enrolled >= cls.capacity) return;
+
+      selectedClassId = classId;
+      document.getElementById("confirmClassName").innerText = cls.name;
+      document.getElementById("confirmClassTime").innerText = `${cls.day} a las ${cls.time}`;
+      document.getElementById("confirmClassTrainer").innerText = cls.trainer;
+
+      openModal("bookModal");
+    }
+
+    function handleConfirmBooking() {
+      const cls = classes.find(c => c.id === selectedClassId);
+      if (cls && cls.enrolled < cls.capacity) {
+        cls.enrolled++;
+        renderClasses();
+        closeModal("bookModal");
+        showToast(`Reserva confirmada en la nube para ${cls.name} ✓`);
+      }
+    }
+
+    // --- INTERACCIONES DE MODALES Y COMPONENTES ---
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.add("active");
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.remove("active");
+    }
+
+    // Cerrar modales si se hace clic fuera del contenido
+    window.addEventListener("click", (e) => {
+      if (e.target.classList.contains("modal-overlay")) {
+        e.target.classList.remove("active");
+      }
+    });
+
+    // Sistema de Toasts
+    function showToast(message) {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.classList.add("toast");
+      toast.innerHTML = `
+        <i data-lucide="check-circle" style="color:var(--accent); width:18px; height:18px;"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      // Transición slide-in
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 50);
+
+      // Transición slide-out
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => {
+          toast.remove();
+        }, 350);
+      }, 4000);
+    }
+
+    // --- ANIMACIONES & SCROLL ---
+    function handleScroll() {
+      const navbar = document.getElementById("navbar");
+      const navLinks = document.querySelectorAll(".nav-links a");
+      const sections = document.querySelectorAll("section");
+
+      // Modificar navbar al hacer scroll
+      if (window.scrollY > 50) {
+        navbar.classList.add("scrolled");
+      } else {
+        navbar.classList.remove("scrolled");
+      }
+
+      // Control de link activo en la barra de navegación según el scroll
+      let currentSectionId = "inicio";
+      sections.forEach(sec => {
+        const top = sec.offsetTop - 120;
+        const height = sec.offsetHeight;
+        if (window.scrollY >= top && window.scrollY < top + height) {
+          currentSectionId = sec.getAttribute("id");
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === `#${currentSectionId}`) {
+          link.classList.add("active");
+        }
+      });
+    }
+
+    // Toggle del menú móvil
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinksList = document.getElementById("navLinks");
+
+    menuToggle.addEventListener("click", () => {
+      navLinksList.classList.toggle("active");
+      const icon = menuToggle.querySelector("i");
+      if (navLinksList.classList.contains("active")) {
+        icon.setAttribute("data-lucide", "x");
+      } else {
+        icon.setAttribute("data-lucide", "menu");
+      }
+      lucide.createIcons();
+    });
+
+    // Cerrar menú móvil al hacer click en algún link
+    document.querySelectorAll(".nav-links a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinksList.classList.remove("active");
+        menuToggle.querySelector("i").setAttribute("data-lucide", "menu");
+        lucide.createIcons();
+      });
+    });
+
+    // Configurar Intersection Observers para disparar animaciones
+    function setupIntersectionObservers() {
+      // 1. Barras de Uptime animadas al entrar en pantalla
+      const uptimeContainer = document.getElementById("uptimeBars");
+      const uptimeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll(".uptime-bar").forEach(bar => {
+              bar.style.transform = "scaleY(1)";
+            });
+            uptimeObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      
+      if (uptimeContainer) {
+        uptimeObserver.observe(uptimeContainer);
+      }
+
+      // 2. Animar contador de "Días sin incidentes: 47"
+      const incidentCounter = document.getElementById("incidentCounter");
+      const incidentObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateValue(incidentCounter, 0, 47, 1800);
+            incidentObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      if (incidentCounter) {
+        incidentObserver.observe(incidentCounter.parentElement);
+      }
+    }
+
+    // --- FUNCIONES AUXILIARES DE ANIMACIÓN (NUMÉRICAS) ---
+    function animateValue(obj, start, end, duration) {
+      if (!obj) return;
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString("es-PE");
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          obj.innerHTML = end.toLocaleString("es-PE");
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    function animateValueFloat(obj, start, end, duration, suffix = "") {
+      if (!obj) return;
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const current = (progress * (end - start) + start).toFixed(2);
+        obj.innerHTML = parseFloat(current).toFixed(1) + suffix;
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          obj.innerHTML = end.toFixed(1) + suffix;
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    // --- VINCULACIÓN ENTRE HEATMAP Y TARJETAS DE RIESGO ---
+    function setupHeatmapLinking() {
+      const nodes = document.querySelectorAll(".heatmap-node");
+      const cards = document.querySelectorAll(".risk-card");
+
+      // Hover en el nodo del Mapa de calor -> Destacar Tarjeta
+      nodes.forEach(node => {
+        const riskId = node.getAttribute("data-risk");
+        const targetCard = document.getElementById(`card-${riskId}`);
+
+        node.addEventListener("mouseenter", () => {
+          if (targetCard) {
+            targetCard.classList.add("highlight");
+            // Centrar la tarjeta en la vista de forma suave si no es visible del todo
+            targetCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        });
+
+        node.addEventListener("mouseleave", () => {
+          if (targetCard) {
+            targetCard.classList.remove("highlight");
+          }
+        });
+      });
+
+      // Hover en la tarjeta de riesgo -> Destacar Nodo del Mapa
+      cards.forEach(card => {
+        const riskId = card.id.replace("card-", "");
+        const targetNode = document.getElementById(`node-${riskId}`);
+
+        card.addEventListener("mouseenter", () => {
+          if (targetNode) {
+            targetNode.classList.add("highlight");
+          }
+        });
+
+        card.addEventListener("mouseleave", () => {
+          if (targetNode) {
+            targetNode.classList.remove("highlight");
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>
